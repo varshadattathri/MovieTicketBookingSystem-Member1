@@ -337,22 +337,33 @@ static void cancelBooking() {
 
 
     // Calculates total revenue
-    static void revenueReport() {
+    
+static void revenueReport() {
 
-        double revenue = 0;
-        int totalTickets = 0;
+    double revenue = 0;
+    int totalTickets = 0;
 
-        for (Booking b : bookings) {
-
-            revenue += b.getTotal();
-            totalTickets += b.getSeats().size();
-        }
-
-        System.out.println("\n===== REVENUE REPORT =====");
-        System.out.println("Total Bookings: " + bookings.size());
-        System.out.println("Tickets Sold: " + totalTickets);
-        System.out.println("Total Revenue: Rs." + revenue);
+    for (Booking b : bookings) {
+        revenue += b.getTotal();
+        totalTickets += b.getSeats().size();
     }
+
+    double averageBookingValue = bookings.isEmpty()
+            ? 0 : revenue / bookings.size();
+
+    double averageTicketPrice = totalTickets == 0
+            ? 0 : revenue / totalTickets;
+
+    System.out.println("\n===== REVENUE REPORT =====");
+    System.out.println("Total Bookings: " + bookings.size());
+    System.out.println("Tickets Sold: " + totalTickets);
+    System.out.printf("Total Revenue: Rs.%.2f%n", revenue);
+    System.out.printf("Average Revenue Per Booking: Rs.%.2f%n",
+            averageBookingValue);
+    System.out.printf("Average Ticket Price: Rs.%.2f%n",
+            averageTicketPrice);
+}
+
 
     // Adds a new movie
     
