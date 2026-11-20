@@ -131,77 +131,104 @@ public class MovieTicketBooking {
     }
 
     // Books movie tickets
-    static void bookTickets() {
+    
+static void bookTickets() {
+
+    try {
+
+        if (movies.isEmpty()) {
+            System.out.println("No movies available!");
+            return;
+        }
+
+        sc.nextLine();
+
+        System.out.print("Customer Name: ");
+        String name = sc.nextLine().trim();
+
+        if (name.isEmpty()) {
+            System.out.println("Invalid customer name!");
+            return;
+        }
+
+        displayMovies();
+
+        
+System.out.print("Enter Movie ID: ");
+
+if (!sc.hasNext()) {
+    System.out.println("No input available!");
+    return;
+}
+
+String movieIdInput = sc.next();
+
+int movieId;
+
+try {
+    movieId = Integer.parseInt(movieIdInput);
+} catch (NumberFormatException e) {
+    System.out.println("Invalid Movie ID! Enter a number.");
+    return;
+}
+
+Movie movie = findMovie(movieId);
+
+sc.nextLine();
+
+
+        System.out.print("Enter Date (DD/MM/YYYY): ");
+        String date = sc.nextLine().trim();
+
+        DateTimeFormatter formatter =
+                DateTimeFormatter.ofPattern("dd/MM/uuuu")
+                .withResolverStyle(ResolverStyle.STRICT);
 
         try {
+            LocalDate selectedDate = LocalDate.parse(date, formatter);
 
-            if (movies.isEmpty()) {
-                System.out.println("No movies available!");
+            if (selectedDate.isBefore(LocalDate.now())) {
+                System.out.println(
+                    "Cannot book tickets for a past date!");
                 return;
             }
 
-            sc.nextLine();
-
-            System.out.print("Customer Name: ");
-            String name = sc.nextLine();
-
-            if (name.trim().isEmpty()) {
-                System.out.println("Invalid customer name!");
-                return;
-            }
-
-            displayMovies();
-
-            System.out.print("Enter Movie ID: ");
-            Movie movie = findMovie(sc.nextInt());
-
-            sc.nextLine();
-
-            System.out.print("Enter Date (DD/MM/YYYY): ");
-            String date = sc.nextLine();
-
-            DateTimeFormatter formatter =
-                    DateTimeFormatter.ofPattern("dd/MM/uuuu")
-                    .withResolverStyle(ResolverStyle.STRICT);
-
-            try {
-                LocalDate selectedDate = LocalDate.parse(date, formatter);
-
-                if (selectedDate.isBefore(LocalDate.now())) {
-                System.out.println("Cannot book tickets for a past date!");
-                return;
-                }
-
-            } catch (Exception e) {
-                System.out.println("Invalid date!");
-                return;
+        } catch (Exception e) {
+            System.out.println("Invalid date!");
+            return;
         }
 
-            String time = getShowTime();
+        String time = getShowTime();
 
-            if (time == null) {
-                System.out.println("Invalid showtime!");
-                return;
-            }
-
-            String key = movie.getId() + "|" + date + "|" + time;
-
-            ArrayList<Integer> seats = selectSeats(key);
-
-            Booking b = new Booking(nextBookingId++, name,
-                    movie, date, time, seats);
-
-            bookings.add(b);
-
-            System.out.println("\nBOOKING SUCCESSFUL!");
-            b.display();
-
-        } catch (MovieNotFoundException |
-                 SeatNotAvailableException e) {
-
-            System.out.println("Error: " + e.getMessage());
+        if (time == null) {
+            System.out.println("Invalid showtime!");
+            return;
         }
+
+        String key = movie.getId() + "|" + date + "|" + time;
+
+        ArrayList<Integer> seats = selectSeats(key);
+
+        if (seats == null || seats.isEmpty()) {
+            System.out.println("No seats selected!");
+            return;
+        }
+
+        Booking b = new Booking(nextBookingId++, name,
+                movie, date, time, seats);
+
+        bookings.add(b);
+
+        System.out.println("\nBOOKING SUCCESSFUL!");
+        b.display();
+
+    } catch (MovieNotFoundException |
+             SeatNotAvailableException e) {
+
+        System.out.println("Error: " + e.getMessage());
     }
+}
+
 
     // Displays all bookings
     static void viewBookings() {
