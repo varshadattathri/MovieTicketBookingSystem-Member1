@@ -40,22 +40,34 @@ public class Movie {
     }
 
     // Setter methods
-    public void setName(String name) {
-        this.name = name;
+    // Setter methods with validation
+public void setName(String name) {
+    if (name == null || name.trim().isEmpty()) {
+        throw new IllegalArgumentException("Movie name cannot be empty.");
     }
+    this.name = name;
+}
 
-    public void setGenre(String genre) {
-        this.genre = genre;
+public void setGenre(String genre) {
+    if (genre == null || genre.trim().isEmpty()) {
+        throw new IllegalArgumentException("Genre cannot be empty.");
     }
+    this.genre = genre;
+}
 
-    public void setDuration(int duration) {
-        this.duration = duration;
+public void setDuration(int duration) {
+    if (duration <= 0) {
+        throw new IllegalArgumentException("Duration must be positive.");
     }
+    this.duration = duration;
+}
 
-    public void setPrice(int price) {
-        this.price = price;
+public void setPrice(int price) {
+    if (price <= 0) {
+        throw new IllegalArgumentException("Price must be positive.");
     }
-
+    this.price = price;
+}
     // Displays movie details
     public void display() {
         System.out.println(id + " | " + name + " | " + genre
