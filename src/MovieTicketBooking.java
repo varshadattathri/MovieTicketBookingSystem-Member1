@@ -494,109 +494,110 @@ static void searchMovie() {
     }
 
     // Main method
-    public static void main(String[] args) {
+    
+public static void main(String[] args) {
 
-        addSampleMovies();
+    addSampleMovies();
 
-        // Demonstrating runtime polymorphism
-        User customer = new Customer("Guest");
-        User admin = new Admin("Cinema Admin");
+    User customer = new Customer("Guest");
+    User admin = new Admin("Cinema Admin");
 
-        System.out.println(
-                "\n===== MOVIE TICKET BOOKING SYSTEM =====");
+    System.out.println("\n===== MOVIE TICKET BOOKING SYSTEM =====");
+    System.out.println("Customer Role: " + customer.getRole());
+    System.out.println("Admin Role: " + admin.getRole());
 
-        System.out.println("Customer Role: " + customer.getRole());
-        System.out.println("Admin Role: " + admin.getRole());
+    int choice = 0;
 
-        int choice;
+    do {
 
-        do {
+        System.out.println("\n========== MOVIE TICKET BOOKING SYSTEM ==========");
+        System.out.println("1. View Movies");
+        System.out.println("2. Book Tickets");
+        System.out.println("3. View Bookings");
+        System.out.println("4. Cancel Booking");
+        System.out.println("5. Revenue Report");
+        System.out.println("6. Add Movie");
+        System.out.println("7. Remove Movie");
+        System.out.println("8. Search Movie");
+        System.out.println("9. Update Movie");
+        System.out.println("10. Sort Movies by Price");
+        System.out.println("11. View Movie Details");
+        System.out.println("12. Exit");
 
-            System.out.println(
-                    "\n========== MOVIE TICKET BOOKING SYSTEM ==========");
+        System.out.print("\nEnter choice: ");
 
-            System.out.println("1. View Movies");
-            System.out.println("2. Book Tickets");
-            System.out.println("3. View Bookings");
-            System.out.println("4. Cancel Booking");
-            System.out.println("5. Revenue Report");
-            System.out.println("6. Add Movie");
-            System.out.println("7. Remove Movie");
-            System.out.println("8. Search Movie");
-            System.out.println("9. Update Movie");
-            System.out.println("10. Sort Movies by Price");
-            System.out.println("11. View Movie Details");
-            System.out.println("12. Exit");
+        String input = sc.next();
 
-            System.out.print("\nEnter choice: ");
-            choice = sc.nextInt();
+        try {
+            choice = Integer.parseInt(input);
+        } catch (NumberFormatException e) {
+            System.out.println("Invalid input! Please enter a number.");
+            continue;
+        }
 
-            switch (choice) {
+        switch (choice) {
 
-                case 1:
-                    displayMovies();
-                    break;
+            case 1:
+                displayMovies();
+                break;
 
-                case 2:
-                    bookTickets();
-                    break;
+            case 2:
+                bookTickets();
+                break;
 
-                case 3:
-                    viewBookings();
-                    break;
+            case 3:
+                viewBookings();
+                break;
 
-                case 4:
-                    cancelBooking();
-                    break;
+            case 4:
+                cancelBooking();
+                break;
 
-                case 5:
-                    revenueReport();
-                    break;
+            case 5:
+                revenueReport();
+                break;
 
-                case 6:
-                    addMovie();
-                    break;
+            case 6:
+                addMovie();
+                break;
 
-                case 7:
-                    removeMovie();
-                    break;
+            case 7:
+                removeMovie();
+                break;
 
-                case 8:
-                    searchMovie();
-                    break;
+            case 8:
+                searchMovie();
+                break;
 
-                case 9:
-                    updateMovie();
-                    break;
+            case 9:
+                updateMovie();
+                break;
 
-                case 10:
-                    sortMovies();
-                    break;
+            case 10:
+                sortMovies();
+                break;
 
-                case 11:
+            case 11:
+                try {
+                    System.out.print("Enter Movie ID: ");
+                    findMovie(sc.nextInt()).display();
+                } catch (MovieNotFoundException e) {
+                    System.out.println(e.getMessage());
+                }
+                break;
 
-                    try {
-                        System.out.print("Enter Movie ID: ");
-                        findMovie(sc.nextInt()).display();
+            case 12:
+                System.out.println(
+                    "Thank you for using Movie Ticket Booking System!");
+                break;
 
-                    } catch (MovieNotFoundException e) {
+            default:
+                System.out.println("Invalid choice!");
+        }
 
-                        System.out.println(e.getMessage());
-                    }
+    } while (choice != 12);
 
-                    break;
+    sc.close();
+}
 
-                case 12:
-                    System.out.println(
-                            "Thank you for using Movie Ticket Booking System!");
-                    break;
-
-                default:
-                    System.out.println("Invalid choice!");
-            }
-
-        } while (choice != 12);
-
-        sc.close();
-    }
 }
