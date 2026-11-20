@@ -274,46 +274,67 @@ sc.nextLine();
     }
 
     // Cancels booking and releases seats
-    static void cancelBooking() {
+    
+static void cancelBooking() {
+
+    try {
+
+        System.out.print("Enter Booking ID: ");
+
+        if (!sc.hasNext()) {
+            System.out.println("No input available!");
+            return;
+        }
+
+        String input = sc.next();
+        int id;
 
         try {
-
-            System.out.print("Enter Booking ID: ");
-            int id = sc.nextInt();
-
-            Booking found = null;
-
-            for (Booking b : bookings) {
-
-                if (b.getBookingId() == id) {
-                    found = b;
-                    break;
-                }
-            }
-
-            if (found == null) {
-                throw new BookingNotFoundException(
-                        "Booking not found!");
-            }
-
-            String key = found.getMovieId() + "|" +
-                    found.getDate() + "|" + found.getTime();
-
-            HashSet<Integer> seats = occupiedSeats.get(key);
-
-            if (seats != null) {
-                seats.removeAll(found.getSeats());
-            }
-
-            bookings.remove(found);
-
-            System.out.println("Booking cancelled successfully!");
-
-        } catch (BookingNotFoundException e) {
-
-            System.out.println("Error: " + e.getMessage());
+            id = Integer.parseInt(input);
+        } catch (NumberFormatException e) {
+            System.out.println("Invalid Booking ID! Enter a number.");
+            return;
         }
+
+        Booking found = null;
+
+        for (Booking b : bookings) {
+            if (b.getBookingId() == id) {
+                found = b;
+                break;
+            }
+        }
+
+        if (found == null) {
+            throw new BookingNotFoundException("Booking not found!");
+        }
+
+        System.out.print("Confirm cancellation? (yes/no): ");
+        String confirmation = sc.next();
+
+        if (!confirmation.equalsIgnoreCase("yes")) {
+            System.out.println("Cancellation cancelled!");
+            return;
+        }
+
+        String key = found.getMovieId() + "|" +
+                found.getDate() + "|" + found.getTime();
+
+        HashSet<Integer> seats = occupiedSeats.get(key);
+
+        if (seats != null) {
+            seats.removeAll(found.getSeats());
+        }
+
+        bookings.remove(found);
+
+        System.out.println("Booking cancelled successfully!");
+
+    } catch (BookingNotFoundException e) {
+        System.out.println("Error: " + e.getMessage());
     }
+}
+
 
     // Calculates total revenue
     static void revenueReport() {
