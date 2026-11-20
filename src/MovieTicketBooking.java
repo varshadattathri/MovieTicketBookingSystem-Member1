@@ -638,26 +638,68 @@ static void updateMovie() {
 }
 
     // Manually implemented Bubble Sort
-    static void sortMovies() {
+    
+static void sortMovies() {
 
-        for (int i = 0; i < movies.size() - 1; i++) {
+    if (movies.isEmpty()) {
+        System.out.println("No movies available to sort!");
+        return;
+    }
 
-            for (int j = 0; j < movies.size() - i - 1; j++) {
+    System.out.println("\n===== SORT MOVIES =====");
+    System.out.println("1. Price - Low to High");
+    System.out.println("2. Price - High to Low");
+    System.out.println("3. Movie Name - Alphabetical");
 
-                if (movies.get(j).getPrice() >
-                        movies.get(j + 1).getPrice()) {
+    System.out.print("Enter choice: ");
 
-                    Movie temp = movies.get(j);
+    if (!sc.hasNextInt()) {
+        System.out.println("Invalid choice! Enter a number.");
+        sc.nextLine();
+        return;
+    }
 
-                    movies.set(j, movies.get(j + 1));
-                    movies.set(j + 1, temp);
-                }
+    int choice = sc.nextInt();
+
+    for (int i = 0; i < movies.size() - 1; i++) {
+
+        for (int j = 0; j < movies.size() - i - 1; j++) {
+
+            Movie first = movies.get(j);
+            Movie second = movies.get(j + 1);
+
+            boolean swap = false;
+
+            switch (choice) {
+
+                case 1:
+                    swap = first.getPrice() > second.getPrice();
+                    break;
+
+                case 2:
+                    swap = first.getPrice() < second.getPrice();
+                    break;
+
+                case 3:
+                    swap = first.getName().compareToIgnoreCase(
+                            second.getName()) > 0;
+                    break;
+
+                default:
+                    System.out.println("Invalid choice!");
+                    return;
+            }
+
+            if (swap) {
+                movies.set(j, second);
+                movies.set(j + 1, first);
             }
         }
-
-        System.out.println("\nMovies sorted by ticket price:");
-        displayMovies();
     }
+
+    System.out.println("\nMovies sorted successfully!");
+    displayMovies();
+}
 
     // Main method
     
