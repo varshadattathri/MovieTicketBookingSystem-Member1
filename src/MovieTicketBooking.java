@@ -84,51 +84,81 @@ public class MovieTicketBooking {
     }
 
     // Checks and selects available seats
-    static ArrayList<Integer> selectSeats(String key)
-            throws SeatNotAvailableException {
+    
+static ArrayList<Integer> selectSeats(String key)
+        throws SeatNotAvailableException {
 
-        HashSet<Integer> booked = occupiedSeats.get(key);
+    HashSet<Integer> booked = occupiedSeats.get(key);
 
-        if (booked == null) {
-            booked = new HashSet<>();
-            occupiedSeats.put(key, booked);
-        }
-
-        ArrayList<Integer> selected = new ArrayList<>();
-        HashSet<Integer> temporary = new HashSet<>();
-
-        System.out.println("Available seats: 1 to 20");
-        System.out.println("Booked seats: " + booked);
-
-        System.out.print("Enter number of seats: ");
-        int count = sc.nextInt();
-
-        if (count <= 0 || count > 20) {
-            throw new SeatNotAvailableException(
-                    "Invalid seat quantity!");
-        }
-
-        for (int i = 0; i < count; i++) {
-
-            System.out.print("Enter seat number: ");
-            int seat = sc.nextInt();
-
-            if (seat < 1 || seat > 20 ||
-                    booked.contains(seat) ||
-                    !temporary.add(seat)) {
-
-                throw new SeatNotAvailableException(
-                        "Seat " + seat + " is unavailable!");
-            }
-
-            selected.add(seat);
-        }
-
-        // Reserve seats after checking all selections
-        booked.addAll(selected);
-
-        return selected;
+    if (booked == null) {
+        booked = new HashSet<>();
+        occupiedSeats.put(key, booked);
     }
+
+    ArrayList<Integer> selected = new ArrayList<>();
+    HashSet<Integer> temporary = new HashSet<>();
+
+    System.out.println("Available seats: 1 to 20");
+    System.out.println("Booked seats: " + booked);
+
+    System.out.print("Enter number of seats: ");
+
+    if (!sc.hasNext()) {
+        throw new SeatNotAvailableException("No input available!");
+    }
+
+    String countInput = sc.next();
+
+    int count;
+
+    try {
+        count = Integer.parseInt(countInput);
+    } catch (NumberFormatException e) {
+        throw new SeatNotAvailableException(
+                "Invalid seat quantity! Enter a number.");
+    }
+
+    if (count <= 0 || count > 20) {
+        throw new SeatNotAvailableException(
+                "Invalid seat quantity!");
+    }
+
+    for (int i = 0; i < count; i++) {
+
+        System.out.print("Enter seat number: ");
+
+        if (!sc.hasNext()) {
+            throw new SeatNotAvailableException("No input available!");
+        }
+
+        String seatInput = sc.next();
+
+        int seat;
+
+        try {
+            seat = Integer.parseInt(seatInput);
+        } catch (NumberFormatException e) {
+            throw new SeatNotAvailableException(
+                    "Invalid seat number! Enter a number.");
+        }
+
+        if (seat < 1 || seat > 20 ||
+                booked.contains(seat) ||
+                !temporary.add(seat)) {
+
+            throw new SeatNotAvailableException(
+                    "Seat " + seat + " is unavailable!");
+        }
+
+        selected.add(seat);
+    }
+
+    // Reserve seats only after all selections are valid
+    booked.addAll(selected);
+
+    return selected;
+}
+
 
     // Books movie tickets
     
