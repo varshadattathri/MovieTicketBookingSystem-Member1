@@ -355,34 +355,52 @@ static void addMovie() {
 
 
     // Removes a movie
-    static void removeMovie() {
+    
+static void removeMovie() {
 
-        try {
+    try {
 
-            System.out.print("Enter Movie ID: ");
-            Movie m = findMovie(sc.nextInt());
+        System.out.print("Enter Movie ID: ");
 
-            for (Booking b : bookings) {
-
-                if (b.getMovieId() == m.getId()) {
-
-                    System.out.println(
-                            "Cannot remove a movie with active bookings!");
-                    return;
-                }
-            }
-
-            movies.remove(m);
-
-            System.out.println("Movie removed successfully!");
-
-        } catch (MovieNotFoundException e) {
-
-            System.out.println(e.getMessage());
+        if (!sc.hasNextInt()) {
+            System.out.println("Invalid Movie ID! Enter a number.");
+            sc.nextLine();
+            return;
         }
-    }
 
-    // Searches movies by name or genre
+        int id = sc.nextInt();
+        Movie m = findMovie(id);
+
+        for (Booking b : bookings) {
+            if (b.getMovieId() == m.getId()) {
+                System.out.println(
+                    "Cannot remove a movie with active bookings!");
+                return;
+            }
+        }
+
+        System.out.print("Are you sure you want to remove "
+                + m.getName() + "? (yes/no): ");
+
+        sc.nextLine();
+        String confirmation = sc.nextLine().trim();
+
+        if (!confirmation.equalsIgnoreCase("yes")) {
+            System.out.println("Movie removal cancelled!");
+            return;
+        }
+
+        movies.remove(m);
+
+        System.out.println("Movie removed successfully!");
+
+    } catch (MovieNotFoundException e) {
+        System.out.println(e.getMessage());
+    }
+}
+
+
+    
     // Searches movies by name or genre
 static void searchMovie() {
 
