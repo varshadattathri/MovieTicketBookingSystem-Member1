@@ -278,10 +278,21 @@ public class MovieTicketBooking {
 
     // Adds a new movie
     
+
 static void addMovie() {
 
     System.out.print("Enter Movie ID: ");
+    if (!sc.hasNextInt()) {
+        System.out.println("Invalid Movie ID! Enter a number.");
+        sc.nextLine();
+        return;
+    }
     int id = sc.nextInt();
+
+    if (id <= 0) {
+        System.out.println("Movie ID must be positive!");
+        return;
+    }
 
     for (Movie m : movies) {
         if (m.getId() == id) {
@@ -295,7 +306,11 @@ static void addMovie() {
     System.out.print("Movie Name: ");
     String name = sc.nextLine().trim();
 
-    // Check for duplicate movie names
+    if (name.isEmpty()) {
+        System.out.println("Movie name cannot be empty!");
+        return;
+    }
+
     for (Movie m : movies) {
         if (m.getName().equalsIgnoreCase(name)) {
             System.out.println("Movie already exists!");
@@ -306,17 +321,29 @@ static void addMovie() {
     System.out.print("Genre: ");
     String genre = sc.nextLine().trim();
 
+    if (genre.isEmpty()) {
+        System.out.println("Genre cannot be empty!");
+        return;
+    }
+
     System.out.print("Duration: ");
+    if (!sc.hasNextInt()) {
+        System.out.println("Invalid duration! Enter a number.");
+        sc.nextLine();
+        return;
+    }
     int duration = sc.nextInt();
 
     System.out.print("Ticket Price: ");
+    if (!sc.hasNextInt()) {
+        System.out.println("Invalid ticket price! Enter a number.");
+        sc.nextLine();
+        return;
+    }
     int price = sc.nextInt();
 
-    if (id <= 0 || name.isEmpty() ||
-            genre.isEmpty() ||
-            duration <= 0 || price <= 0) {
-
-        System.out.println("Invalid movie details!");
+    if (duration <= 0 || price <= 0) {
+        System.out.println("Duration and price must be positive!");
         return;
     }
 
@@ -324,6 +351,7 @@ static void addMovie() {
 
     System.out.println("Movie added successfully!");
 }
+
 
 
     // Removes a movie
