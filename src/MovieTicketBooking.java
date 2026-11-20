@@ -346,29 +346,35 @@ public class MovieTicketBooking {
     }
 
     // Searches movies by name or genre
-    static void searchMovie() {
+    // Searches movies by name or genre
+static void searchMovie() {
 
-        sc.nextLine();
+    sc.nextLine();
 
-        System.out.print("Enter Movie Name or Genre: ");
-        String search = sc.nextLine().trim().toLowerCase();
+    System.out.print("Enter Movie Name or Genre: ");
+    String search = sc.nextLine().trim().toLowerCase();
 
-        boolean found = false;
+    if (search.isEmpty()) {
+        System.out.println("Search cannot be empty!");
+        return;
+    }
 
-        for (Movie m : movies) {
+    boolean found = false;
 
-            if (m.getName().toLowerCase().contains(search) ||
-                    m.getGenre().toLowerCase().contains(search)) {
+    for (Movie m : movies) {
 
-                m.display();
-                found = true;
-            }
-        }
+        if (m.getName().toLowerCase().contains(search) ||
+                m.getGenre().toLowerCase().contains(search)) {
 
-        if (!found) {
-            System.out.println("Movie not found!");
+            m.display();
+            found = true;
         }
     }
+
+    if (!found) {
+        System.out.println("No matching movies found!");
+    }
+}
 
     // Updates movie information
     static void updateMovie() {
