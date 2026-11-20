@@ -277,45 +277,54 @@ public class MovieTicketBooking {
     }
 
     // Adds a new movie
-    static void addMovie() {
+    
+static void addMovie() {
 
-        System.out.print("Enter Movie ID: ");
-        int id = sc.nextInt();
+    System.out.print("Enter Movie ID: ");
+    int id = sc.nextInt();
 
-        for (Movie m : movies) {
-
-            if (m.getId() == id) {
-                System.out.println("Movie ID already exists!");
-                return;
-            }
-        }
-
-        sc.nextLine();
-
-        System.out.print("Movie Name: ");
-        String name = sc.nextLine();
-
-        System.out.print("Genre: ");
-        String genre = sc.nextLine();
-
-        System.out.print("Duration: ");
-        int duration = sc.nextInt();
-
-        System.out.print("Ticket Price: ");
-        int price = sc.nextInt();
-
-        if (id <= 0 || name.trim().isEmpty() ||
-                genre.trim().isEmpty() ||
-                duration <= 0 || price <= 0) {
-
-            System.out.println("Invalid movie details!");
+    for (Movie m : movies) {
+        if (m.getId() == id) {
+            System.out.println("Movie ID already exists!");
             return;
         }
-
-        movies.add(new Movie(id, name, genre, duration, price));
-
-        System.out.println("Movie added successfully!");
     }
+
+    sc.nextLine();
+
+    System.out.print("Movie Name: ");
+    String name = sc.nextLine().trim();
+
+    // Check for duplicate movie names
+    for (Movie m : movies) {
+        if (m.getName().equalsIgnoreCase(name)) {
+            System.out.println("Movie already exists!");
+            return;
+        }
+    }
+
+    System.out.print("Genre: ");
+    String genre = sc.nextLine().trim();
+
+    System.out.print("Duration: ");
+    int duration = sc.nextInt();
+
+    System.out.print("Ticket Price: ");
+    int price = sc.nextInt();
+
+    if (id <= 0 || name.isEmpty() ||
+            genre.isEmpty() ||
+            duration <= 0 || price <= 0) {
+
+        System.out.println("Invalid movie details!");
+        return;
+    }
+
+    movies.add(new Movie(id, name, genre, duration, price));
+
+    System.out.println("Movie added successfully!");
+}
+
 
     // Removes a movie
     static void removeMovie() {
