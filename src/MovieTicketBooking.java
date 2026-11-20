@@ -414,90 +414,121 @@ static void searchMovie() {
 }
 
     // Updates movie information
-    static void updateMovie() {
+    
+static void updateMovie() {
 
-        try {
+    try {
 
-            System.out.print("Enter Movie ID: ");
-            Movie m = findMovie(sc.nextInt());
+        System.out.print("Enter Movie ID: ");
 
-            System.out.println("\n1. Update Name");
-            System.out.println("2. Update Genre");
-            System.out.println("3. Update Duration");
-            System.out.println("4. Update Price");
-
-            System.out.print("Enter choice: ");
-            int choice = sc.nextInt();
-
+        if (!sc.hasNextInt()) {
+            System.out.println("Invalid Movie ID! Enter a number.");
             sc.nextLine();
-
-            switch (choice) {
-
-                case 1:
-
-                    System.out.print("New Name: ");
-                    String name = sc.nextLine();
-
-                    if (name.trim().isEmpty()) {
-                        System.out.println("Invalid name!");
-                        return;
-                    }
-
-                    m.setName(name);
-                    break;
-
-                case 2:
-
-                    System.out.print("New Genre: ");
-                    String genre = sc.nextLine();
-
-                    if (genre.trim().isEmpty()) {
-                        System.out.println("Invalid genre!");
-                        return;
-                    }
-
-                    m.setGenre(genre);
-                    break;
-
-                case 3:
-
-                    System.out.print("New Duration: ");
-                    int duration = sc.nextInt();
-
-                    if (duration <= 0) {
-                        System.out.println("Invalid duration!");
-                        return;
-                    }
-
-                    m.setDuration(duration);
-                    break;
-
-                case 4:
-
-                    System.out.print("New Price: ");
-                    int price = sc.nextInt();
-
-                    if (price <= 0) {
-                        System.out.println("Invalid price!");
-                        return;
-                    }
-
-                    m.setPrice(price);
-                    break;
-
-                default:
-
-                    System.out.println("Invalid choice!");
-                    return;
-            }
-
-            System.out.println("Movie updated successfully!");
-
-        } catch (MovieNotFoundException e) {
-
-            System.out.println(e.getMessage());
+            return;
         }
+
+        Movie m = findMovie(sc.nextInt());
+        sc.nextLine();
+
+        System.out.println("\n1. Update Name");
+        System.out.println("2. Update Genre");
+        System.out.println("3. Update Duration");
+        System.out.println("4. Update Price");
+
+        System.out.print("Enter choice: ");
+
+        if (!sc.hasNextInt()) {
+            System.out.println("Invalid choice! Enter a number.");
+            sc.nextLine();
+            return;
+        }
+
+        int choice = sc.nextInt();
+        sc.nextLine();
+
+        switch (choice) {
+
+            case 1:
+                System.out.print("New Name: ");
+                String name = sc.nextLine().trim();
+
+                if (name.isEmpty()) {
+                    System.out.println("Invalid name!");
+                    return;
+                }
+
+                for (Movie movie : movies) {
+                    if (movie.getId() != m.getId() &&
+                        movie.getName().equalsIgnoreCase(name)) {
+                        System.out.println("Movie name already exists!");
+                        return;
+                    }
+                }
+
+                m.setName(name);
+                break;
+
+            case 2:
+                System.out.print("New Genre: ");
+                String genre = sc.nextLine().trim();
+
+                if (genre.isEmpty()) {
+                    System.out.println("Invalid genre!");
+                    return;
+                }
+
+                m.setGenre(genre);
+                break;
+
+            case 3:
+                System.out.print("New Duration: ");
+
+                if (!sc.hasNextInt()) {
+                    System.out.println("Invalid duration! Enter a number.");
+                    sc.nextLine();
+                    return;
+                }
+
+                int duration = sc.nextInt();
+
+                if (duration <= 0) {
+                    System.out.println("Invalid duration!");
+                    return;
+                }
+
+                m.setDuration(duration);
+                break;
+
+            case 4:
+                System.out.print("New Price: ");
+
+                if (!sc.hasNextInt()) {
+                    System.out.println("Invalid price! Enter a number.");
+                    sc.nextLine();
+                    return;
+                }
+
+                int price = sc.nextInt();
+
+                if (price <= 0) {
+                    System.out.println("Invalid price!");
+                    return;
+                }
+
+                m.setPrice(price);
+                break;
+
+            default:
+                System.out.println("Invalid choice!");
+                return;
+        }
+
+        System.out.println("Movie updated successfully!");
+
+    } catch (MovieNotFoundException e) {
+        System.out.println(e.getMessage());
     }
+}
 
     // Manually implemented Bubble Sort
     static void sortMovies() {
