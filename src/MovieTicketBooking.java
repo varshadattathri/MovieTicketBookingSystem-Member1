@@ -1,144 +1,25 @@
 
 import java.util.*;
-
-// Custom exception classes
-class MovieNotFoundException extends Exception {
-    MovieNotFoundException(String msg) {
-        super(msg);
-    }
-}
-
-class SeatNotAvailableException extends Exception {
-    SeatNotAvailableException(String msg) {
-        super(msg);
-    }
-}
-
-class BookingNotFoundException extends Exception {
-    BookingNotFoundException(String msg) {
-        super(msg);
-    }
-}
-
-// Abstract class demonstrating abstraction
-abstract class User {
-    private String name;
-
-    User(String name) {
-        this.name = name;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    abstract String getRole();
-}
-
-// Inheritance and method overriding
-class Customer extends User {
-    Customer(String name) {
-        super(name);
-    }
-
-    @Override
-    String getRole() {
-        return "Customer";
-    }
-}
-
-class Admin extends User {
-    Admin(String name) {
-        super(name);
-    }
-
-    @Override
-    String getRole() {
-        return "Administrator";
-    }
-}
-
-// Movie class demonstrating encapsulation
-class Movie {
-    private int id, duration, price;
-    private String name, genre;
-
-    Movie(int id, String name, String genre, int duration, int price) {
-        this.id = id;
-        this.name = name;
-        this.genre = genre;
-        this.duration = duration;
-        this.price = price;
-    }
-
-    int getId() { return id; }
-    String getName() { return name; }
-    String getGenre() { return genre; }
-    int getDuration() { return duration; }
-    int getPrice() { return price; }
-
-    void setName(String name) { this.name = name; }
-    void setGenre(String genre) { this.genre = genre; }
-    void setDuration(int duration) { this.duration = duration; }
-    void setPrice(int price) { this.price = price; }
-
-    // Displays movie information
-    void display() {
-        System.out.println(id + " | " + name + " | " + genre
-                + " | " + duration + " mins | Rs." + price);
-    }
-}
-
-// Stores booking information
-class Booking {
-    private int bookingId, movieId;
-    private String customer, movieName, date, time;
-    private ArrayList<Integer> seats;
-    private double total;
-
-    Booking(int bookingId, String customer, Movie movie,
-            String date, String time, ArrayList<Integer> seats) {
-        this.bookingId = bookingId;
-        this.customer = customer;
-        this.movieId = movie.getId();
-        this.movieName = movie.getName();
-        this.date = date;
-        this.time = time;
-        this.seats = new ArrayList<>(seats);
-        this.total = movie.getPrice() * seats.size();
-    }
-
-    int getBookingId() { return bookingId; }
-    int getMovieId() { return movieId; }
-    String getDate() { return date; }
-    String getTime() { return time; }
-    ArrayList<Integer> getSeats() { return seats; }
-    double getTotal() { return total; }
-
-    void display() {
-        System.out.println("\nBooking ID: " + bookingId);
-        System.out.println("Customer: " + customer);
-        System.out.println("Movie: " + movieName);
-        System.out.println("Date: " + date);
-        System.out.println("Time: " + time);
-        System.out.println("Seats: " + seats);
-        System.out.println("Total: Rs." + total);
-    }
-}
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.ResolverStyle;
 
 public class MovieTicketBooking {
 
     static Scanner sc = new Scanner(System.in);
+
     static ArrayList<Movie> movies = new ArrayList<>();
     static ArrayList<Booking> bookings = new ArrayList<>();
 
-    // Stores occupied seats for each movie, date and showtime
-    static HashMap<String, HashSet<Integer>> occupiedSeats = new HashMap<>();
+    // Stores booked seats for each movie, date and showtime
+    static HashMap<String, HashSet<Integer>> occupiedSeats =
+            new HashMap<>();
 
     static int nextBookingId = 101;
 
-    // Adds initial movies
+    // Adds some sample movies
     static void addSampleMovies() {
+
         movies.add(new Movie(1, "Interstellar", "Sci-Fi", 169, 180));
         movies.add(new Movie(2, "Inception", "Thriller", 148, 150));
         movies.add(new Movie(3, "Avatar", "Adventure", 192, 200));
@@ -147,50 +28,71 @@ public class MovieTicketBooking {
 
     // Searches for a movie using its ID
     static Movie findMovie(int id) throws MovieNotFoundException {
+
         for (Movie m : movies) {
-            if (m.getId() == id)
+            if (m.getId() == id) {
                 return m;
+            }
         }
+
         throw new MovieNotFoundException("Movie not found!");
     }
 
-    // COMMON: Displays available movies
+    // Displays all available movies
     static void displayMovies() {
+
         if (movies.isEmpty()) {
             System.out.println("No movies available!");
             return;
         }
 
         System.out.println("\nID | Name | Genre | Duration | Price");
-        for (Movie m : movies)
+
+        for (Movie m : movies) {
             m.display();
-    }
-
-    // Displays show timings and returns the selected time
-    static String getShowTime() {
-        System.out.println("\n1. 10:00 AM");
-        System.out.println("2. 2:00 PM");
-        System.out.println("3. 6:00 PM");
-        System.out.println("4. 9:00 PM");
-        System.out.print("Select Show: ");
-
-        switch (sc.nextInt()) {
-            case 1: return "10:00 AM";
-            case 2: return "2:00 PM";
-            case 3: return "6:00 PM";
-            case 4: return "9:00 PM";
-            default: return null;
         }
     }
 
-    // COMMON: Selects seats and checks availability
+    // Displays movie showtimes
+    static String getShowTime() {
+
+        System.out.println("\nAvailable Showtimes");
+        System.out.println("1. 10:00 AM");
+        System.out.println("2. 2:00 PM");
+        System.out.println("3. 6:00 PM");
+        System.out.println("4. 9:00 PM");
+
+        System.out.print("Select Show: ");
+
+        switch (sc.nextInt()) {
+
+            case 1:
+                return "10:00 AM";
+
+            case 2:
+                return "2:00 PM";
+
+            case 3:
+                return "6:00 PM";
+
+            case 4:
+                return "9:00 PM";
+
+            default:
+                return null;
+        }
+    }
+
+    // Checks and selects available seats
     static ArrayList<Integer> selectSeats(String key)
             throws SeatNotAvailableException {
 
         HashSet<Integer> booked = occupiedSeats.get(key);
 
-        if (booked == null)
+        if (booked == null) {
             booked = new HashSet<>();
+            occupiedSeats.put(key, booked);
+        }
 
         ArrayList<Integer> selected = new ArrayList<>();
         HashSet<Integer> temporary = new HashSet<>();
@@ -201,15 +103,20 @@ public class MovieTicketBooking {
         System.out.print("Enter number of seats: ");
         int count = sc.nextInt();
 
-        if (count <= 0 || count > 20)
-            throw new SeatNotAvailableException("Invalid seat quantity!");
+        if (count <= 0 || count > 20) {
+            throw new SeatNotAvailableException(
+                    "Invalid seat quantity!");
+        }
 
         for (int i = 0; i < count; i++) {
+
             System.out.print("Enter seat number: ");
             int seat = sc.nextInt();
 
             if (seat < 1 || seat > 20 ||
-                    booked.contains(seat) || !temporary.add(seat)) {
+                    booked.contains(seat) ||
+                    !temporary.add(seat)) {
+
                 throw new SeatNotAvailableException(
                         "Seat " + seat + " is unavailable!");
             }
@@ -217,22 +124,24 @@ public class MovieTicketBooking {
             selected.add(seat);
         }
 
-        // Reserve seats after validating all selections
-        occupiedSeats.put(key, booked);
+        // Reserve seats after checking all selections
         booked.addAll(selected);
 
         return selected;
     }
 
-    // COMMON: Books movie tickets
+    // Books movie tickets
     static void bookTickets() {
+
         try {
+
             if (movies.isEmpty()) {
                 System.out.println("No movies available!");
                 return;
             }
 
             sc.nextLine();
+
             System.out.print("Customer Name: ");
             String name = sc.nextLine();
 
@@ -242,17 +151,31 @@ public class MovieTicketBooking {
             }
 
             displayMovies();
+
             System.out.print("Enter Movie ID: ");
             Movie movie = findMovie(sc.nextInt());
 
             sc.nextLine();
+
             System.out.print("Enter Date (DD/MM/YYYY): ");
             String date = sc.nextLine();
 
-            if (!date.matches("\\d{2}/\\d{2}/\\d{4}")) {
-                System.out.println("Invalid date format!");
+            DateTimeFormatter formatter =
+                    DateTimeFormatter.ofPattern("dd/MM/uuuu")
+                    .withResolverStyle(ResolverStyle.STRICT);
+
+            try {
+                LocalDate selectedDate = LocalDate.parse(date, formatter);
+
+                if (selectedDate.isBefore(LocalDate.now())) {
+                System.out.println("Cannot book tickets for a past date!");
                 return;
-            }
+                }
+
+            } catch (Exception e) {
+                System.out.println("Invalid date!");
+                return;
+        }
 
             String time = getShowTime();
 
@@ -262,6 +185,7 @@ public class MovieTicketBooking {
             }
 
             String key = movie.getId() + "|" + date + "|" + time;
+
             ArrayList<Integer> seats = selectSeats(key);
 
             Booking b = new Booking(nextBookingId++, name,
@@ -272,62 +196,76 @@ public class MovieTicketBooking {
             System.out.println("\nBOOKING SUCCESSFUL!");
             b.display();
 
-        } catch (MovieNotFoundException | SeatNotAvailableException e) {
+        } catch (MovieNotFoundException |
+                 SeatNotAvailableException e) {
+
             System.out.println("Error: " + e.getMessage());
         }
     }
 
-    // COMMON: Displays all bookings
+    // Displays all bookings
     static void viewBookings() {
+
         if (bookings.isEmpty()) {
             System.out.println("No bookings available!");
             return;
         }
 
-        for (Booking b : bookings)
+        for (Booking b : bookings) {
             b.display();
+        }
     }
 
-    // COMMON: Cancels booking and releases seats
+    // Cancels booking and releases seats
     static void cancelBooking() {
+
         try {
+
             System.out.print("Enter Booking ID: ");
             int id = sc.nextInt();
 
             Booking found = null;
 
             for (Booking b : bookings) {
+
                 if (b.getBookingId() == id) {
                     found = b;
                     break;
                 }
             }
 
-            if (found == null)
-                throw new BookingNotFoundException("Booking not found!");
+            if (found == null) {
+                throw new BookingNotFoundException(
+                        "Booking not found!");
+            }
 
             String key = found.getMovieId() + "|" +
                     found.getDate() + "|" + found.getTime();
 
             HashSet<Integer> seats = occupiedSeats.get(key);
 
-            if (seats != null)
+            if (seats != null) {
                 seats.removeAll(found.getSeats());
+            }
 
             bookings.remove(found);
+
             System.out.println("Booking cancelled successfully!");
 
         } catch (BookingNotFoundException e) {
+
             System.out.println("Error: " + e.getMessage());
         }
     }
 
-    // COMMON: Generates revenue report
+    // Calculates total revenue
     static void revenueReport() {
+
         double revenue = 0;
         int totalTickets = 0;
 
         for (Booking b : bookings) {
+
             revenue += b.getTotal();
             totalTickets += b.getSeats().size();
         }
@@ -338,12 +276,14 @@ public class MovieTicketBooking {
         System.out.println("Total Revenue: Rs." + revenue);
     }
 
-    // MEMBER 1: Adds a new movie
+    // Adds a new movie
     static void addMovie() {
+
         System.out.print("Enter Movie ID: ");
         int id = sc.nextInt();
 
         for (Movie m : movies) {
+
             if (m.getId() == id) {
                 System.out.println("Movie ID already exists!");
                 return;
@@ -351,6 +291,7 @@ public class MovieTicketBooking {
         }
 
         sc.nextLine();
+
         System.out.print("Movie Name: ");
         String name = sc.nextLine();
 
@@ -364,112 +305,145 @@ public class MovieTicketBooking {
         int price = sc.nextInt();
 
         if (id <= 0 || name.trim().isEmpty() ||
-                genre.trim().isEmpty() || duration <= 0 || price <= 0) {
+                genre.trim().isEmpty() ||
+                duration <= 0 || price <= 0) {
+
             System.out.println("Invalid movie details!");
             return;
         }
 
         movies.add(new Movie(id, name, genre, duration, price));
+
         System.out.println("Movie added successfully!");
     }
 
-    // MEMBER 1: Removes a movie
+    // Removes a movie
     static void removeMovie() {
+
         try {
+
             System.out.print("Enter Movie ID: ");
             Movie m = findMovie(sc.nextInt());
 
             for (Booking b : bookings) {
+
                 if (b.getMovieId() == m.getId()) {
-                    System.out.println("Cannot remove a movie with active bookings!");
+
+                    System.out.println(
+                            "Cannot remove a movie with active bookings!");
                     return;
                 }
             }
 
             movies.remove(m);
+
             System.out.println("Movie removed successfully!");
 
         } catch (MovieNotFoundException e) {
+
             System.out.println(e.getMessage());
         }
     }
 
-    // MEMBER 1: Searches movie by name
+    // Searches movies by name or genre
     static void searchMovie() {
+
         sc.nextLine();
-        System.out.print("Enter Movie Name: ");
-        String name = sc.nextLine().toLowerCase();
+
+        System.out.print("Enter Movie Name or Genre: ");
+        String search = sc.nextLine().trim().toLowerCase();
 
         boolean found = false;
 
         for (Movie m : movies) {
-            if (m.getName().toLowerCase().contains(name)) {
+
+            if (m.getName().toLowerCase().contains(search) ||
+                    m.getGenre().toLowerCase().contains(search)) {
+
                 m.display();
                 found = true;
             }
         }
 
-        if (!found)
+        if (!found) {
             System.out.println("Movie not found!");
+        }
     }
 
-    // MEMBER 1: Updates movie information
+    // Updates movie information
     static void updateMovie() {
+
         try {
+
             System.out.print("Enter Movie ID: ");
             Movie m = findMovie(sc.nextInt());
 
-            System.out.println("1. Update Name");
+            System.out.println("\n1. Update Name");
             System.out.println("2. Update Genre");
             System.out.println("3. Update Duration");
             System.out.println("4. Update Price");
-            System.out.print("Enter choice: ");
 
+            System.out.print("Enter choice: ");
             int choice = sc.nextInt();
+
             sc.nextLine();
 
             switch (choice) {
+
                 case 1:
+
                     System.out.print("New Name: ");
                     String name = sc.nextLine();
+
                     if (name.trim().isEmpty()) {
                         System.out.println("Invalid name!");
                         return;
                     }
+
                     m.setName(name);
                     break;
 
                 case 2:
+
                     System.out.print("New Genre: ");
                     String genre = sc.nextLine();
+
                     if (genre.trim().isEmpty()) {
                         System.out.println("Invalid genre!");
                         return;
                     }
+
                     m.setGenre(genre);
                     break;
 
                 case 3:
+
                     System.out.print("New Duration: ");
                     int duration = sc.nextInt();
+
                     if (duration <= 0) {
                         System.out.println("Invalid duration!");
                         return;
                     }
+
                     m.setDuration(duration);
                     break;
 
                 case 4:
+
                     System.out.print("New Price: ");
                     int price = sc.nextInt();
+
                     if (price <= 0) {
                         System.out.println("Invalid price!");
                         return;
                     }
+
                     m.setPrice(price);
                     break;
 
                 default:
+
                     System.out.println("Invalid choice!");
                     return;
             }
@@ -477,19 +451,23 @@ public class MovieTicketBooking {
             System.out.println("Movie updated successfully!");
 
         } catch (MovieNotFoundException e) {
+
             System.out.println(e.getMessage());
         }
     }
 
-    // MEMBER 1: Manually implemented Bubble Sort
+    // Manually implemented Bubble Sort
     static void sortMovies() {
+
         for (int i = 0; i < movies.size() - 1; i++) {
+
             for (int j = 0; j < movies.size() - i - 1; j++) {
 
                 if (movies.get(j).getPrice() >
                         movies.get(j + 1).getPrice()) {
 
                     Movie temp = movies.get(j);
+
                     movies.set(j, movies.get(j + 1));
                     movies.set(j + 1, temp);
                 }
@@ -500,22 +478,28 @@ public class MovieTicketBooking {
         displayMovies();
     }
 
-    // Main menu
+    // Main method
     public static void main(String[] args) {
+
         addSampleMovies();
 
-        // Demonstrates runtime polymorphism
+        // Demonstrating runtime polymorphism
         User customer = new Customer("Guest");
         User admin = new Admin("Cinema Admin");
 
-        System.out.println("Welcome to CineBook!");
+        System.out.println(
+                "\n===== MOVIE TICKET BOOKING SYSTEM =====");
+
         System.out.println("Customer Role: " + customer.getRole());
         System.out.println("Admin Role: " + admin.getRole());
 
         int choice;
 
         do {
-            System.out.println("\n========== CINEBOOK ==========");
+
+            System.out.println(
+                    "\n========== MOVIE TICKET BOOKING SYSTEM ==========");
+
             System.out.println("1. View Movies");
             System.out.println("2. Book Tickets");
             System.out.println("3. View Bookings");
@@ -533,27 +517,65 @@ public class MovieTicketBooking {
             choice = sc.nextInt();
 
             switch (choice) {
-                case 1: displayMovies(); break;
-                case 2: bookTickets(); break;
-                case 3: viewBookings(); break;
-                case 4: cancelBooking(); break;
-                case 5: revenueReport(); break;
-                case 6: addMovie(); break;
-                case 7: removeMovie(); break;
-                case 8: searchMovie(); break;
-                case 9: updateMovie(); break;
-                case 10: sortMovies(); break;
+
+                case 1:
+                    displayMovies();
+                    break;
+
+                case 2:
+                    bookTickets();
+                    break;
+
+                case 3:
+                    viewBookings();
+                    break;
+
+                case 4:
+                    cancelBooking();
+                    break;
+
+                case 5:
+                    revenueReport();
+                    break;
+
+                case 6:
+                    addMovie();
+                    break;
+
+                case 7:
+                    removeMovie();
+                    break;
+
+                case 8:
+                    searchMovie();
+                    break;
+
+                case 9:
+                    updateMovie();
+                    break;
+
+                case 10:
+                    sortMovies();
+                    break;
+
                 case 11:
+
                     try {
                         System.out.print("Enter Movie ID: ");
                         findMovie(sc.nextInt()).display();
+
                     } catch (MovieNotFoundException e) {
+
                         System.out.println(e.getMessage());
                     }
+
                     break;
+
                 case 12:
-                    System.out.println("Thank you for using CineBook!");
+                    System.out.println(
+                            "Thank you for using Movie Ticket Booking System!");
                     break;
+
                 default:
                     System.out.println("Invalid choice!");
             }
